@@ -1,0 +1,22 @@
+*{
+    text-decoration: none !important;
+    list-style: none !important;
+}
+
+body{
+    background: url('../images/tom-bg.jpg') no-repeat;
+    background-size: cover;
+    background-attachment: fixed;
+}
+
+.helptext, .account div{
+    display: none;
+}
+
+.account p label:last-child{
+    display: none;
+}
+
+
+
+

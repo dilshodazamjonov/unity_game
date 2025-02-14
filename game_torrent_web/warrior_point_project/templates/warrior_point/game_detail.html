@@ -1,0 +1,118 @@
+{% extends 'base.html' %}
+
+{% block title %}
+{{ title }}
+{% endblock title %}
+
+{% block main %}
+
+<div class="d-flex justify-content-between">
+    <div class="col-8">
+        <div class="card">
+            <div class="card-header">
+                <div class="d-flex justify-content-between">
+                <h4>{{ game.title }}</h4>
+
+                    <div class="d-flex">
+                        {% if request.user.is_staff %}
+                        <a href="{% url 'update' game.pk %}" class="btn btn-warning mx-2">Изменить</a>
+                        <a href="{% url 'delete' game.pk %}" class="btn btn-danger">Удалить</a>
+                        {% endif %}
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="card-body">
+                <video src="{{ game.get_video }}" muted controls="controls" preload="auto"
+                       width="100%" height="450px" poster="{{ game.get_photo }}"></video>
+
+                <div class="d-flex justify-content-between mt-3">
+                    <span class="fs-5 fw-bold">Категория: {{ game.category }}</span>
+                    <span>Дата: {{ game.created_at }}</span>
+                </div>
+
+                <div class="d-flex flex-column mt-3">
+                    <h5>Системные требования</h5>
+                    <ul style="list-style: none; margin: 0; padding: 0">
+                        <li><p style="margin: 0; padding: 0" >Операционная система: {{ systems.op_system }}</p></li>
+                        <li><p style=" margin: 0; padding: 0" >Процессор: {{ systems.processor }}</p></li>
+                        <li><p style=" margin: 0; padding: 0" >Оперативная пямять: {{ systems.ram }}</p></li>
+                        <li><p style=" margin: 0; padding: 0" >Пямять: {{ systems.memory }}</p></li>
+                        <li><p style=" margin: 0; padding: 0" >Видео карта: {{ systems.video_card }}</p></li>
+                    </ul>
+
+                    <p class="mt-4 fs-5">{{ game.content }}</p>
+
+                    <div class="d-flex justify-content-center">
+                    <a href="{% url 'download' game.pk %}" class="btn btn-success rounded fs-3">Скачать Torrent</a>
+                        </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="comment mt-3 bg-white p-3 rounded">
+            {% if request.user.is_authenticated %}
+            <form action="
+            {% if 'update' not in request.path %}
+            {% url 'save_comment' game.pk %}
+            {% endif %}
+            " method="post">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button class="btn btn-success" type="submit">
+                    {% if 'update' not in request.path %}
+                    Отправить
+                    {% else %}
+                    Изменить
+                    {% endif %}
+                </button>
+            </form>
+            {% else %}
+            <h5 class="text-center">
+                <a href="{% url 'login' %}">Авторизуйтесь</a> что бы оставить комментарий
+            </h5>
+            {% endif %}
+
+        </div>
+
+        <div class="cinema_comments mt-3">
+
+            {% for comment in comments %}
+            <div class="card rounded p-2 mt-3 " >
+                <div class="d-flex justify-content-between">
+                    <div class="comment_info">
+                        <a href="">{{ comment.user.first_name }}</a>
+                        <p>Дата: {{ comment.created_at }}</p>
+                        <p class="mt-3">{{ comment.text }}</p>
+                    </div>
+
+                    <div class="comment_action">
+                        {% if request.user == comment.user %}
+                        <a href="{% url 'comment_delete' comment.pk game.pk %}" class="text-black fs-5"><i class="bi bi-trash3"></i></a>
+                        <a href="{% url 'comment_update' comment.pk %}" class="text-black mx-3 fs-5"><i class="bi bi-pencil-square"></i></a>
+                        {% endif %}
+                    </div>
+
+
+                </div>
+
+            </div>
+            {% endfor %}
+
+        </div>
+
+    </div>
+
+<!-- Сздесь будут рекомендации   -->
+    <div class="col-3"></div>
+
+</div>
+
+
+
+{% endblock main %}

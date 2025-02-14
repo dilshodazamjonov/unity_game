@@ -1,0 +1,12 @@
+{% load warrior_tags %}
+
+<div class="d-flex justify-content-between p-3 rounded" style="border: 1px solid white">
+    <a href="{% url 'index' %}" class="text-light navbar-brand fs-5 fw-bold">Все</a>
+    {% get_categories as categories %}
+    {% for category in categories %}
+    <a href="{{ category.get_absolute_url }}" class="text-light navbar-brand fs-5 fw-bold">{{ category.cat_name }}</a>
+    {% endfor %}
+</div>
+
+
+
